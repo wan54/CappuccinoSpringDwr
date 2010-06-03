@@ -1,0 +1,11 @@
+I wrote this simple sample app to demonstrate integrating Cappuccino app with Springframework and Directwebremoting.
+
+There are several files that you should look at to understand how the whole thin works:
+
+- web.xml
+- applicationContext.xml
+- AppController.j
+- index.html
+
+Hopefully this will be useful to java folks who are still learning.
+
