@@ -1,6 +1,6 @@
-I wrote this simple sample app to demonstrate integrating Cappuccino app with Springframework and Directwebremoting.
+I wrote this simple sample app to demonstrate integrating Cappuccino app with Springframework and Directwebremoting. This app also demonstrates how Javascript and Objective-J can co-exist.
 
-There are several files that you should look at to understand how the whole thin works:
+There are several files that you should look at to understand how the whole things works:
 
 - web.xml
 - applicationContext.xml
