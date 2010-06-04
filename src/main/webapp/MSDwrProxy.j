@@ -32,7 +32,12 @@
 
 + (void)invokeWithClassName:(CPString)aClass methodName:(CPString)aMethod parameter:(id)anArg
 {
-	[[[self alloc] initWithClassName:aClass delegate:nil] invokeWithMethodName:aMethod argument:anArg];
+	[[[self alloc] initWithClassName:aClass delegate:nil] invokeWithMethodName:aMethod parameter:anArg];
+}
+
++ (void)invokeWithClassName:(CPString)aClass methodName:(CPString)aMethod parameter:(id)anArg performAction:(SEL)aSelector
+{
+	[[[self alloc] initWithClassName:aClass delegate:nil] invokeWithMethodName:aMethod parameter:anArg performAction:aSelector];
 }
 
 - (id)initWithClassName:(CPString)aClass delegate:(id)aDelegate
@@ -55,7 +60,7 @@
 	window[_class][aMethod]();
 }
 
-- (void)invokeWithMethodName:(CPString)aMethod argument:(id)anArg
+- (void)invokeWithMethodName:(CPString)aMethod parameter:(id)anArg
 {
 	window[_class][aMethod](anArg);
 }
