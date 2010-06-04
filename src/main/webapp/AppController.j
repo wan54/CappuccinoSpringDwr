@@ -1,20 +1,28 @@
 /*
  * AppController.j
- * CappuccinoDwr
+ * Example for Cappuccino integration with Springframework and Directwebremoting
  *
- * Created by You on April 9, 2010.
- * Copyright 2010, Your Company All rights reserved.
+ * Created by Muliawan Sjarif on June 3, 2010.
+ * Copyright 2010, Muliawan Sjarif.
+ *
+ * MSDwrProxy.j is provided under LGPL License from Free software foundation 
+ * (a copy is included in this distribution).
+ * This library is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Lesser General Public License for more details.
  */
 
 @import <Foundation/CPObject.j>
+@import "MSDwrProxy.j"
 
+var _textShadowColor = "#ccc";
+var _textShadowOffset = CGSizeMake(0, 1);
 
 @implementation AppController : CPObject
 {
 	CPTextField label1, label2, label3;
 	CPTextField sessionValue;
-	CPString _textShadowColor;
-	CGSize _textShadowOffset;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
@@ -23,9 +31,6 @@
         contentView = [theWindow contentView];
 
 		[theWindow setBackgroundColor:[CPColor lightGrayColor]];
-
-		_textShadowColor = [CPString stringWithString:@"#ccc"];
-		_textShadowOffset = CGSizeMake(0, 1);
 
 		var strButton = [[CPButton alloc] initWithFrame:CGRectMake(10, 10, 0, 0)];
 		[strButton setTitle:@"Fetch Server Data"];
@@ -79,50 +84,44 @@
     //[CPMenu setMenuBarVisible:YES];
 }
 
+- (void)fetchData:(id)sender
+{
+	var p = [[MSDwrProxy alloc] initWithClassName:@"DwrInterface" delegate:self];
+
+	[p invokeWithMethodName:@"myObject" performAction:@selector(myObjectResponse:)];
+	[p invokeWithMethodName:@"servletContext" performAction:@selector(servletContextResponse:)];
+}
+
+- (void)myObjectResponse:(id)data
+{
+	if (data) {
+		[label1 setStringValue:data.aString];
+		[label1 setTextColor:data.color];
+		[label1 sizeToFit];	
+
+		[label2 setStringValue:"Now is " + data.now];
+		[label2 setTextColor:data.color];
+		[label2 sizeToFit];
+	}	
+}
+
+- (void)servletContextResponse:(id)data
+{
+	if (data) {	
+		[label3 setStringValue:data];
+		[label3 sizeToFit];
+	}
+}
+
 - (void)invalidateSession:(id)sender
 {
-	DwrInterface.invalidateSession();
+	[MSDwrProxy invokeWithClassName:@"DwrInterface" methodName:@"invalidateSession"];
 }
 
 - (void)setServerSession:(id)sender
 {
 	DwrInterface.setServerSession([sessionValue stringValue]);
-}
-
-- (void)fetchData:(id)sender
-{
-	DwrInterface.myObject(function(data) {
-		if (data) {
-			[label1 setStringValue:data.aString];
-			[label1 setTextColor:data.color];
-			[label1 sizeToFit];	
-
-			[label2 setStringValue:"Now is " + data.now];
-			[label2 setTextColor:data.color];
-			[label2 sizeToFit];
-
-			[self display];
-		}
-
-//		var json = [CPString JSONFromObject:data];
-//		alert(json);
-		
-  });
-
-	DwrInterface.servletContext(function(data) {
-		if (data) {
-			[label3 setStringValue:data];
-			[label3 sizeToFit];
-
-			[self display];
-		}
-	});
-
-}
-
-- (void)display
-{
-	[[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+	[MSDwrProxy invokeWithClassName:@"DwrInterface" methodName:@"setServerSession" parameter:[sessionValue stringValue]];
 }
 
 @end

@@ -7,14 +7,15 @@
  */
 
 @import <Foundation/CPObject.j>
+@import "MSDwrProxy.j"
 
+var _textShadowColor = [CPString stringWithString:@"#ccc"];
+var _textShadowOffset = CGSizeMake(0, 1);
 
 @implementation AppController : CPObject
 {
 	CPTextField label1, label2, label3;
 	CPTextField sessionValue;
-	CPString _textShadowColor;
-	CGSize _textShadowOffset;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
@@ -24,9 +25,6 @@
 
 		[theWindow setBackgroundColor:[CPColor lightGrayColor]];
 
-		_textShadowColor = [CPString stringWithString:@"#ccc"];
-//		textShadowOffset = CGSizeMake(0, 1);
-
 		var strButton = [[CPButton alloc] initWithFrame:CGRectMake(10, 10, 0, 0)];
 		[strButton setTitle:@"Fetch Server Data"];
 		[strButton sizeToFit];
@@ -34,16 +32,16 @@
 		[strButton setAction:@selector(fetchData:)];
 
 		label1 = [[CPTextField alloc] initWithFrame:CGRectMake(10, CGRectGetHeight([strButton bounds])+20, 200, 100)];
-		[label1 setTextShadowColor:@"#ccc"];
-//		[label1 setTextShadowOffset:textShadowOffset];
+		[label1 setTextShadowColor:_textShadowColor];
+		[label1 setTextShadowOffset:_textShadowOffset];
 
 		label2 = [[CPTextField alloc] initWithFrame:CGRectMake(10, CGRectGetHeight([strButton bounds])+40, 0, 0)];
-		[label2 setTextShadowColor:@"#ccc"];
-//		[label2 setTextShadowOffset:textShadowOffset];
+		[label2 setTextShadowColor:_textShadowColor];
+		[label2 setTextShadowOffset:_textShadowOffset];
 
 		label3 = [[CPTextField alloc] initWithFrame:CGRectMake(10, CGRectGetHeight([strButton bounds])+60, 0, 0)];
-		[label3 setTextShadowColor:@"#ccc"];
-//		[label3 setTextShadowOffset:textShadowOffset];
+		[label3 setTextShadowColor:_textShadowColor];
+		[label3 setTextShadowOffset:_textShadowOffset];
 
 		sessionValue = [[CPTextField alloc] initWithFrame:CGRectMake(10, CGRectGetHeight([strButton bounds])+240, 100, 30)];
 		[sessionValue setEditable:YES];
@@ -79,50 +77,44 @@
     //[CPMenu setMenuBarVisible:YES];
 }
 
+- (void)fetchData:(id)sender
+{
+	var p = [[MSDwrProxy alloc] initWithClassName:@"DwrInterface" delegate:self];
+
+	[p invokeWithMethodName:@"myObject" performAction:@selector(myObjectResponse:)];
+	[p invokeWithMethodName:@"servletContext" performAction:@selector(servletContextResponse:)];
+}
+
+- (void)myObjectResponse:(id)data
+{
+	if (data) {
+		[label1 setStringValue:data.aString];
+		[label1 setTextColor:data.color];
+		[label1 sizeToFit];	
+
+		[label2 setStringValue:"Now is " + data.now];
+		[label2 setTextColor:data.color];
+		[label2 sizeToFit];
+	}	
+}
+
+- (void)servletContextResponse:(id)data
+{
+	if (data) {	
+		[label3 setStringValue:data];
+		[label3 sizeToFit];
+	}
+}
+
 - (void)invalidateSession:(id)sender
 {
-	DwrInterface.invalidateSession();
+	[MSDwrProxy invokeWithClassName:@"DwrInterface" methodName:@"invalidateSession"];
 }
 
 - (void)setServerSession:(id)sender
 {
 	DwrInterface.setServerSession([sessionValue stringValue]);
-}
-
-- (void)fetchData:(id)sender
-{
-	DwrInterface.myObject(function(data) {
-		if (data) {
-			[label1 setStringValue:data.aString];
-			[label1 setTextColor:data.color];
-			[label1 sizeToFit];	
-
-			[label2 setStringValue:"Now is " + data.now];
-			[label2 setTextColor:data.color];
-			[label2 sizeToFit];
-
-			[self display];
-		}
-
-//		var json = [CPString JSONFromObject:data];
-//		alert(json);
-		
-  });
-
-	DwrInterface.servletContext(function(data) {
-		if (data) {
-			[label3 setStringValue:data];
-			[label3 sizeToFit];
-
-			[self display];
-		}
-	});
-
-}
-
-- (void)display
-{
-	[[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+	[MSDwrProxy invokeWithClassName:@"DwrInterface" methodName:@"setServerSession" parameter:[sessionValue stringValue]];
 }
 
 @end

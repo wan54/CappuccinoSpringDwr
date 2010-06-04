@@ -4,8 +4,12 @@ There are several files that you should look at to understand how the whole thin
 
 - web.xml
 - applicationContext.xml
-- AppController.j
 - index.html
+- AppController.j
+- MSDwrProxy.j
 
 Hopefully this will be useful to java folks who are still learning.
 
+TODO:
+- add support for multiple parameter passing to the remote method.
+- add example for integration with Hibernate
