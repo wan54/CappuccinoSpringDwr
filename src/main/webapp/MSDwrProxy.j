@@ -25,6 +25,11 @@
 	[[[self alloc] initWithClassName:aClass delegate:aDelegate] invokeWithMethodName:aMethod performAction:aSelector];
 }
 
++ (void)invokeWithClassName:(CPString)aClass methodName:(CPString)aMethod parameter:(id)anArg delegate:(id)aDelegate performAction:(SEL)aSelector
+{
+	[[[self alloc] initWithClassName:aClass delegate:aDelegate] invokeWithMethodName:aMethod parameter:anArg performAction:aSelector];
+}
+
 + (void)invokeWithClassName:(CPString)aClass methodName:(CPString)aMethod
 {
 	[[[self alloc] initWithClassName:aClass delegate:nil] invokeWithMethodName:aMethod];
@@ -33,11 +38,6 @@
 + (void)invokeWithClassName:(CPString)aClass methodName:(CPString)aMethod parameter:(id)anArg
 {
 	[[[self alloc] initWithClassName:aClass delegate:nil] invokeWithMethodName:aMethod parameter:anArg];
-}
-
-+ (void)invokeWithClassName:(CPString)aClass methodName:(CPString)aMethod parameter:(id)anArg performAction:(SEL)aSelector
-{
-	[[[self alloc] initWithClassName:aClass delegate:nil] invokeWithMethodName:aMethod parameter:anArg performAction:aSelector];
 }
 
 - (id)initWithClassName:(CPString)aClass delegate:(id)aDelegate
