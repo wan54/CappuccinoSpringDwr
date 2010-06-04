@@ -1,4 +1,5 @@
-I wrote this simple sample app to demonstrate integrating Cappuccino app with Springframework and Directwebremoting. This app also demonstrates how Javascript and Objective-J can co-exist.
+I wrote this simple sample app to demonstrate integrating Cappuccino app with Springframework and Directwebremoting. 
+This app also demonstrates how Javascript and Objective-J can co-exist.
 
 There are several files that you should look at to understand how the whole thing works:
 
@@ -17,7 +18,11 @@ There are several files that you should look at to understand how the whole thin
 - MSDwrProxy.j
   A proxy between Cappuccino app and DWR.
 
-Hopefully this will be useful to java folks who are still learning.
+Hopefully this will be useful to java folks who are still learning. 
+
+To those who are using eclipse: 
+
+You can download all the files and import into your eclipse project (you may need to adjust the classpath to suit your environment setup). 
 
 TODO:
 - add support in MSDwrProxy.j for multiple parameter passing to the remote method.
