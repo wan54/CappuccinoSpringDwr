@@ -37,7 +37,7 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>2.0</version>
         <configuration>
-          <webappDirectory>C:\java\apache-tomcat-6.0.16\webapps\cappspringdwr</webappDirectory>
+          <webappDirectory>/Users/muliawan/Development/DevTools/WebContainers/apache-tomcat-6.0.16/webapps/cappspringdwr</webappDirectory>
         </configuration>
       </plugin>
 		</plugins>
