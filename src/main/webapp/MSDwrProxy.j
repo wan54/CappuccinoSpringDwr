@@ -40,6 +40,11 @@
 	[[[self alloc] initWithClassName:aClass delegate:nil] invokeWithMethodName:aMethod parameter:anArg];
 }
 
+- (id)initWithClassName:(CPString)aClass
+{
+  return [[self alloc] initWithClassName:aClass delegate:nil];
+}
+
 - (id)initWithClassName:(CPString)aClass delegate:(id)aDelegate
 {
 	_class = nil;
