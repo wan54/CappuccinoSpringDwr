@@ -16,73 +16,59 @@
 
 @implementation MSDwrProxy : CPObject
 {
-	CPString _class;
 	id _delegate;
 }
 
-+ (void)invokeWithClassName:(CPString)aClass methodName:(CPString)aMethod delegate:(id)aDelegate performAction:(SEL)aSelector
++ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate performAction:(SEL)aSelector
 {
-	[[[self alloc] initWithClassName:aClass delegate:aDelegate] invokeWithMethodName:aMethod performAction:aSelector];
+	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameter:nil performAction:aSelector];
 }
 
-+ (void)invokeWithClassName:(CPString)aClass methodName:(CPString)aMethod parameter:(id)anArg delegate:(id)aDelegate performAction:(SEL)aSelector
++ (void)invokeWithMethod:(id)aMethod parameter:(id)aParam delegate:(id)aDelegate performAction:(SEL)aSelector
 {
-	[[[self alloc] initWithClassName:aClass delegate:aDelegate] invokeWithMethodName:aMethod parameter:anArg performAction:aSelector];
+	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameter:aParam performAction:aSelector];
 }
 
-+ (void)invokeWithClassName:(CPString)aClass methodName:(CPString)aMethod
++ (void)invokeWithMethod:(id)aMethod
 {
-	[[[self alloc] initWithClassName:aClass delegate:nil] invokeWithMethodName:aMethod];
+	[[[self alloc] initWithDelegate:nil] invokeWithMethodName:aMethod];
 }
 
-+ (void)invokeWithClassName:(CPString)aClass methodName:(CPString)aMethod parameter:(id)anArg
++ (void)invokeWithMethod:(id)aMethod parameter:(id)aParam
 {
-	[[[self alloc] initWithClassName:aClass delegate:nil] invokeWithMethodName:aMethod parameter:anArg];
+	[[[self alloc] initWithDelegate:nil] invokeWithMethod:aMethod parameter:aParam];
 }
 
-- (id)initWithClassName:(CPString)aClass
+- (id)initWithDelegate:(id)aDelegate
 {
-  return [[self alloc] initWithClassName:aClass delegate:nil];
-}
-
-- (id)initWithClassName:(CPString)aClass delegate:(id)aDelegate
-{
-	_class = nil;
 	_delegate = nil;
 
 	self = [super init];
 
 	if (self) {
-		_class = aClass;
 		_delegate = aDelegate;
 	}
 
 	return self;
 }
 
-- (void)invokeWithMethodName:(CPString)aMethod
+- (void)invokeWithMethod:(id)aMethod
 {
-	window[_class][aMethod]();
+  aMethod();
 }
 
-- (void)invokeWithMethodName:(CPString)aMethod parameter:(id)anArg
+- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam
 {
-	window[_class][aMethod](anArg);
+	aMethod(aParam);
 }
 
-- (void)invokeWithMethodName:(CPString)aMethod performAction:(SEL)aSelector
+- (void)invokeWithMethod:(id)aMethod performAction:(SEL)aSelector
 {
-	[self invokeWithMethodName:aMethod parameter:nil performAction:aSelector];
+	[self invokeWithMethod:aMethod parameter:nil performAction:aSelector];
 }
 
-- (void)invokeWithMethodName:(CPString)aMethod parameter:(id)aParam performAction:(SEL)aSelector
+- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam performAction:(SEL)aSelector
 {
-//	if (![_delegate respondsToSelector:@selector(aSelector:)]) {
-//		[CPException raise:@"MSDwrProxyException" reason:[_delegate className] + " must implement " + aSelector + "(id)data"];
-//	}
-
-	var fn = window[_class][aMethod];
-	
 	var callback = function(data) {
 		[_delegate performSelector:aSelector withObject:data];
 
@@ -90,9 +76,9 @@
 	};
 
 	if (aParam != nil) {
-		fn(aParam, callback);
+		aMethod(aParam, callback);
 	} else {
-		fn(callback);
+		aMethod(callback);
 	}
 }
 

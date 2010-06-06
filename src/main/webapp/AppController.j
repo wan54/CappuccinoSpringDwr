@@ -1,16 +1,10 @@
 /*
  * AppController.j
  * Example for Cappuccino integration with Springframework and Directwebremoting
- *
+ * by utilizing MSDwrProxy.j
+ * 
  * Created by Muliawan Sjarif on June 3, 2010.
  * Copyright 2010, Muliawan Sjarif.
- *
- * MSDwrProxy.j is provided under LGPL License from Free software foundation 
- * (a copy is included in this distribution).
- * This library is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU Lesser General Public License for more details.
  */
 
 @import <Foundation/CPObject.j>
@@ -55,7 +49,6 @@ var _textShadowOffset = CGSizeMake(0, 1);
 		[sessionValue setEnabled:YES];
 		[sessionValue setBezeled:YES];
 		[sessionValue setBezelStyle:CPTextFieldRoundedBezel];
-//		[sessionValue setBordered:YES];
 		
 		var strButton2 = [[CPButton alloc] initWithFrame:CGRectMake(CGRectGetWidth([sessionValue bounds])+10, CGRectGetHeight([sessionValue bounds])+240, 0, 0)];
 		[strButton2 setTitle:@"Set Session Attribute"];
@@ -86,10 +79,10 @@ var _textShadowOffset = CGSizeMake(0, 1);
 
 - (void)fetchData:(id)sender
 {
-	var p = [[MSDwrProxy alloc] initWithClassName:@"DwrInterface" delegate:self];
+	var p = [[MSDwrProxy alloc] initWithDelegate:self];
 
-	[p invokeWithMethodName:@"myObject" performAction:@selector(myObjectResponse:)];
-	[p invokeWithMethodName:@"servletContext" performAction:@selector(servletContextResponse:)];
+	[p invokeWithMethod:DwrInterface.myObject performAction:@selector(myObjectResponse:)];
+	[p invokeWithMethod:DwrInterface.servletContext performAction:@selector(servletContextResponse:)];
 }
 
 - (void)myObjectResponse:(id)data
@@ -99,7 +92,7 @@ var _textShadowOffset = CGSizeMake(0, 1);
 		[label1 setTextColor:data.color];
 		[label1 sizeToFit];	
 
-		[label2 setStringValue:"Now is " + data.now];
+		[label2 setStringValue:"Now isisis " + data.now];
 		[label2 setTextColor:data.color];
 		[label2 sizeToFit];
 	}	
@@ -115,13 +108,12 @@ var _textShadowOffset = CGSizeMake(0, 1);
 
 - (void)invalidateSession:(id)sender
 {
-	[MSDwrProxy invokeWithClassName:@"DwrInterface" methodName:@"invalidateSession"];
+	[MSDwrProxy invokeWithMethod:DwrInterface.invalidateSession];
 }
 
 - (void)setServerSession:(id)sender
 {
-	DwrInterface.setServerSession([sessionValue stringValue]);
-	[MSDwrProxy invokeWithClassName:@"DwrInterface" methodName:@"setServerSession" parameter:[sessionValue stringValue]];
+	[MSDwrProxy invokeWithMethod:DwrInterface.setServerSession parameter:[sessionValue stringValue]];
 }
 
 @end
