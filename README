@@ -25,5 +25,4 @@ To those who are using eclipse:
 You can download all the files and import into your eclipse project (you may need to adjust the classpath to suit your environment setup). 
 
 TODO:
-- add support in MSDwrProxy.j for multiple parameter passing to the remote method.
 - add example for integration with Hibernate
