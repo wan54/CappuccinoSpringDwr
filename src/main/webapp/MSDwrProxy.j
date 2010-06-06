@@ -45,9 +45,11 @@
 
       [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
     };
+    
+    [params addObject:callback];
 
     if (params && [params count] > 0) {
-      aMethod.apply(this, params, callback);
+      aMethod.apply(this, params);
     } else {
       aMethod(callback);
     }
@@ -72,12 +74,12 @@
 	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameters:nil performAction:aSelector];
 }
 
-+ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate parameter:(id)aParam performAction:(SEL)aSelector
++ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate performAction:(SEL)aSelector parameter:(id)aParam
 {
 	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] performAction:aSelector];
 }
 
-+ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate parameters:(CPArray)params performAction:(SEL)aSelector
++ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate performAction:(SEL)aSelector parameters:(CPArray)params
 {
 	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameters:params performAction:aSelector];
 }
