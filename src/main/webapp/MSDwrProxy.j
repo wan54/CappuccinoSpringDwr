@@ -31,7 +31,7 @@
 
 + (void)invokeWithMethod:(id)aMethod
 {
-	[[[self alloc] initWithDelegate:nil] invokeWithMethodName:aMethod];
+	[[[self alloc] initWithDelegate:nil] invokeWithMethod:aMethod];
 }
 
 + (void)invokeWithMethod:(id)aMethod parameter:(id)aParam
