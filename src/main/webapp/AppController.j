@@ -92,7 +92,7 @@ var _textShadowOffset = CGSizeMake(0, 1);
 		[label1 setTextColor:data.color];
 		[label1 sizeToFit];	
 
-		[label2 setStringValue:"Now isisis " + data.now];
+		[label2 setStringValue:"Now is " + data.now];
 		[label2 setTextColor:data.color];
 		[label2 sizeToFit];
 	}	
