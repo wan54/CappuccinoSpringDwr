@@ -19,6 +19,7 @@ import com.wan.cappdwr.model.MyObject;
 public class DwrInterface 
 {
 	private static final String SESSION_NAME = "CAPPDWR";
+	private static final String CUSTOM_SESSION_ATTR_NAME = "custom attr name";
 	private static final Map<Integer,String> colors = new HashMap<Integer,String>();
 	
 	static 
@@ -64,7 +65,11 @@ public class DwrInterface
 					"Remote User = " + req.getRemoteUser() + "\n" +
 					"Session = " + req.getSession() + "\n" +
 					"Session Id = " + (req.getSession() != null ? req.getSession().getId() : null) + "\n" +
-					"Session Attribute = " + (req.getSession() != null ? req.getSession().getAttribute(SESSION_NAME) : null);
+					"Session Attribute Value of CAPPDWR = " + (req.getSession() != null ? req.getSession().getAttribute(SESSION_NAME) : null) + "\n" +
+					"Session Attribute Value of " + req.getSession().getAttribute(CUSTOM_SESSION_ATTR_NAME) + " = " + 
+						(req.getSession() != null ? 
+								(req.getSession().getAttribute(CUSTOM_SESSION_ATTR_NAME) != null ? 
+										req.getSession().getAttribute(req.getSession().getAttribute(CUSTOM_SESSION_ATTR_NAME).toString()) : null) : null);
 			}
 		}
 		
@@ -72,7 +77,7 @@ public class DwrInterface
 	}
 	
 	@RemoteMethod
-	public void setServerSession(String sessionValue)
+	public void setSessionAttributeValue(String sessionValue)
 	{
 		WebContext wctx = WebContextFactory.get();
 		
@@ -80,6 +85,20 @@ public class DwrInterface
 			HttpSession s = wctx.getSession();
 			if (s != null) {
 				s.setAttribute(SESSION_NAME, sessionValue);
+			}
+		}
+	}
+	
+	@RemoteMethod
+	public void setSessionAttributeNameAndValue(String attrName, String attrValue) {
+		WebContext wctx = WebContextFactory.get();
+		
+		if (wctx != null) {
+			HttpSession s = wctx.getSession();
+			
+			if (s != null) {
+				s.setAttribute(CUSTOM_SESSION_ATTR_NAME, attrName);
+				s.setAttribute(attrName, attrValue);
 			}
 		}
 	}

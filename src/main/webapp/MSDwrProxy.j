@@ -19,26 +19,6 @@
 	id _delegate;
 }
 
-+ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate performAction:(SEL)aSelector
-{
-	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameter:nil performAction:aSelector];
-}
-
-+ (void)invokeWithMethod:(id)aMethod parameter:(id)aParam delegate:(id)aDelegate performAction:(SEL)aSelector
-{
-	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameter:aParam performAction:aSelector];
-}
-
-+ (void)invokeWithMethod:(id)aMethod
-{
-	[[[self alloc] initWithDelegate:nil] invokeWithMethod:aMethod];
-}
-
-+ (void)invokeWithMethod:(id)aMethod parameter:(id)aParam
-{
-	[[[self alloc] initWithDelegate:nil] invokeWithMethod:aMethod parameter:aParam];
-}
-
 - (id)initWithDelegate:(id)aDelegate
 {
 	_delegate = nil;
@@ -52,39 +32,69 @@
 	return self;
 }
 
-- (void)invokeWithMethod:(id)aMethod
-{
-  aMethod();
-}
-
-- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam
-{
-	aMethod(aParam);
-}
-
 - (void)invokeWithMethod:(id)aMethod performAction:(SEL)aSelector
 {
-	[self invokeWithMethod:aMethod parameter:nil performAction:aSelector];
+	[self invokeWithMethod:aMethod parameters:nil performAction:aSelector];
 }
 
-- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam performAction:(SEL)aSelector
+- (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params performAction:(SEL)aSelector
 {
-	var callback = function(data) {
-		[_delegate performSelector:aSelector withObject:data];
+  if (aSelector != nil) {
+    var callback = function(data) {
+      [_delegate performSelector:aSelector withObject:data];
 
-		[[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
-	};
+      [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+    };
 
-	if (aParam != nil) {
-		aMethod(aParam, callback);
-	} else {
-		aMethod(callback);
-	}
+    if (params && [params count] > 0) {
+      aMethod.apply(this, params, callback);
+    } else {
+      aMethod(callback);
+    }
+  } else {
+    if (params && [params count] > 0) {
+      aMethod.apply(this, params);
+    } else {
+      aMethod();
+    }
+
+  }
+
 }
 
 - (id)delegate
 {
 	return _delegate;
+}
+
++ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate performAction:(SEL)aSelector
+{
+	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameters:nil performAction:aSelector];
+}
+
++ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate parameter:(id)aParam performAction:(SEL)aSelector
+{
+	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] performAction:aSelector];
+}
+
++ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate parameters:(CPArray)params performAction:(SEL)aSelector
+{
+	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameters:params performAction:aSelector];
+}
+
++ (void)invokeWithMethod:(id)aMethod
+{
+	[[[self alloc] initWithDelegate:nil] invokeWithMethod:aMethod parameters:nil performAction:nil];
+}
+
++ (void)invokeWithMethod:(id)aMethod parameter:(id)aParam
+{
+	[[[self alloc] initWithDelegate:nil] invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] performAction:nil];
+}
+
++ (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params
+{
+  [[[self alloc] initWithDelegate:nil] invokeWithMethod:aMethod parameters:params performAction:nil];
 }
 
 @end
