@@ -34,7 +34,12 @@
 
 - (void)invokeWithMethod:(id)aMethod performAction:(SEL)aSelector
 {
-	[self invokeWithMethod:aMethod parameters:nil performAction:aSelector];
+	if (self) [self invokeWithMethod:aMethod parameters:nil performAction:aSelector];
+}
+
+- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam performAction:(SEL)aSelector
+{
+	if (self) [self invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] performAction:aSelector];
 }
 
 - (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params performAction:(SEL)aSelector
@@ -58,9 +63,7 @@
     } else {
       aMethod();
     }
-
   }
-
 }
 
 - (id)delegate
