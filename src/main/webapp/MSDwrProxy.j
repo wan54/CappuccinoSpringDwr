@@ -48,7 +48,7 @@
 
     if (params && [params count] > 0) {
 			[params addObject:callback];
-      aMethod.apply(this, params, callback);
+      aMethod.apply(this, params);
     } else {
       aMethod(callback);
     }
