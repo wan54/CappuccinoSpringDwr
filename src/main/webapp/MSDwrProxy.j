@@ -47,6 +47,7 @@
     };
 
     if (params && [params count] > 0) {
+			[params addObject:callback];
       aMethod.apply(this, params, callback);
     } else {
       aMethod(callback);
@@ -67,17 +68,17 @@
 	return _delegate;
 }
 
-+ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate performAction:(SEL)aSelector
++ (void)invokeWithMethod:(id)aMethod performAction:(SEL)aSelector delegate:(id)aDelegate
 {
 	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameters:nil performAction:aSelector];
 }
 
-+ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate parameter:(id)aParam performAction:(SEL)aSelector
++ (void)invokeWithMethod:(id)aMethod parameter:(id)aParam performAction:(SEL)aSelector delegate:(id)aDelegate
 {
 	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] performAction:aSelector];
 }
 
-+ (void)invokeWithMethod:(id)aMethod delegate:(id)aDelegate parameters:(CPArray)params performAction:(SEL)aSelector
++ (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params performAction:(SEL)aSelector delegate:(id)aDelegate
 {
 	[[[self alloc] initWithDelegate:aDelegate] invokeWithMethod:aMethod parameters:params performAction:aSelector];
 }
