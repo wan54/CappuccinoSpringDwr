@@ -90,7 +90,7 @@ public class DwrInterface
 	}
 	
 	@RemoteMethod
-	public void setSessionAttributeNameAndValue(String attrName, String attrValue) {
+	public String setSessionAttributeNameAndValue(String attrName, String attrValue) {
 		WebContext wctx = WebContextFactory.get();
 		
 		if (wctx != null) {
@@ -99,8 +99,10 @@ public class DwrInterface
 			if (s != null) {
 				s.setAttribute(CUSTOM_SESSION_ATTR_NAME, attrName);
 				s.setAttribute(attrName, attrValue);
+				return "Session value was set successfully!";
 			}
 		}
+		return null;
 	}
 	
 	@RemoteMethod
