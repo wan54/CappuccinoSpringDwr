@@ -104,10 +104,11 @@ var _textShadowOffset = CGSizeMake(0, 1);
 - (void)fetchData:(id)sender
 {
   // call DWR method asynchronously and perform some action after a response is received
-	var p = [[MSDwrProxy alloc] initWithDelegate:self];
+	var p = [MSDwrProxy initialize];
 
-	[p invokeWithMethod:DwrInterface.myObject performAction:@selector(myObjectResponse:)];
-	[p invokeWithMethod:DwrInterface.servletContext performAction:@selector(servletContextResponse:)];
+	[p setTarget:self];
+	[p invokeWithMethod:DwrInterface.myObject action:@selector(myObjectResponse:)];
+	[p invokeWithMethod:DwrInterface.servletContext action:@selector(servletContextResponse:)];
 }
 
 - (void)myObjectResponse:(id)data
@@ -145,12 +146,18 @@ var _textShadowOffset = CGSizeMake(0, 1);
 
 - (void)setSessionAttributeNameAndValue:(id)sender
 {
-  // call DWR method synchronously with multiple parameters
+  // call DWR method asynchronously with multiple parameters and perform some action after a response is received
   var params = [CPArray array];
   [params addObject:[sessionAttrName stringValue]];
   [params addObject:[sessionAttrValue2 stringValue]];
   
-  [MSDwrProxy invokeWithMethod:DwrInterface.setSessionAttributeNameAndValue parameters:params];
+	var p = [MSDwrProxy initialize];
+  [p invokeWithMethod:DwrInterface.setSessionAttributeNameAndValue parameters:params target:self action:@selector(responseReceived:)];
+}
+
+- (void)responseReceived:(id)data
+{
+	alert(data);
 }
 
 @end

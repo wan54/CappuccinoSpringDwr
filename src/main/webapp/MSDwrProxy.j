@@ -16,7 +16,8 @@
 
 @implementation MSDwrProxy : CPObject
 {
-	id _delegate;
+	id _target;
+	SEL _selector;
 }
 
 - (id)init
@@ -25,36 +26,36 @@
 	return self;
 }
 
-- (void)invokeWithMethod:(id)aMethod performAction:(SEL)aSelector
+- (void)invokeWithMethod:(id)aMethod action:(SEL)aSelector
 {
-	if (self) [self invokeWithMethod:aMethod parameters:nil performAction:aSelector delegate:[self delegate]];
+	if (self) [self invokeWithMethod:aMethod parameters:nil target:[self target] action:aSelector];
 }
 
-- (void)invokeWithMethod:(id)aMethod performAction:(SEL)aSelector delegate:(id)aDelegate
+- (void)invokeWithMethod:(id)aMethod target:(id)aTarget action:(SEL)aSelector
 {
-	if (self) [self invokeWithMethod:aMethod parameters:nil performAction:aSelector delegate:aDelegate];
+	if (self) [self invokeWithMethod:aMethod parameters:nil target:aTarget action:aSelector];
 }
 
-- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam performAction:(SEL)aSelector
+- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam action:(SEL)aSelector
 {
-	if (self) [self invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] performAction:aSelector delegate:[self delegate]];
+	if (self) [self invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] target:[self target] action:aSelector];
 }
 
-- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam performAction:(SEL)aSelector delegate:(id)aDelegate
+- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam target:(id)aTarget action:(SEL)aSelector
 {
-	if (self) [self invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] performAction:aSelector delegate:aDelegate];
+	if (self) [self invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] target:aTarget action:aSelector];
 }
 
-- (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params performAction:(SEL)aSelector
+- (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params action:(SEL)aSelector
 {
-	if (self) [self invokeWithMethod:aMethod parameters:params performAction:aSelector delegate:[self delegate]];
+	if (self) [self invokeWithMethod:aMethod parameters:params target:[self target] action:aSelector];
 }
 
-- (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params performAction:(SEL)aSelector delegate:(id)aDelegate
+- (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params target:(id)aTarget action:(SEL)aSelector
 {
-  if (aDelegate != nil && aSelector != nil) {
+  if (aTarget != nil && aSelector != nil) {
     var callback = function(data) {
-      [aDelegate performSelector:aSelector withObject:data];
+      [aTarget performSelector:aSelector withObject:data];
 
       [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
     };
@@ -74,29 +75,44 @@
   }
 }
 
++ (id)initialize
+{
+	return [[self alloc] init];
+}
+
 + (void)invokeWithMethod:(id)aMethod
 {
-	[[[self alloc] init] invokeWithMethod:aMethod parameters:nil performAction:nil delegate:nil];
+	[[[self alloc] init] invokeWithMethod:aMethod parameters:nil target:nil action:nil];
 }
 
 + (void)invokeWithMethod:(id)aMethod parameter:(id)aParam
 {
-	[[[self alloc] init] invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] performAction:nil delegate:nil];
+	[[[self alloc] init] invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] target:nil action:nil];
 }
 
 + (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params
 {
-  [[[self alloc] init] invokeWithMethod:aMethod parameters:params performAction:nil delegate:nil];
+  [[[self alloc] init] invokeWithMethod:aMethod parameters:params target:nil action:nil];
 }
 
-- (void)setDelegate:(id)aDelegate
+- (void)setTarget:(id)aTarget
 {
-	_delegate = aDelegate;
+	_target = aTarget;
 }
 
-- (id)delegate
+- (void)setAction:(SEL)aSelector
 {
-	return _delegate;
+	_selector = aSelector;
+}
+
+- (id)target
+{
+	return _target;
+}
+
+- (SEL)action
+{
+	return _selector;
 }
 
 @end
