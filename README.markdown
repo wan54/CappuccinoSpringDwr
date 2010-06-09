@@ -10,9 +10,7 @@ Import this class:
 
         @import "MSDwrProxy.j"
           
-***
-          
-Say you have an exposed DWR Service class: **DwrInterface** and method: **doSomething** 
+Say you have an exposed DWR Service class: <code>DwrInterface</code> and method: <code>doSomething</code> 
           
 Call a DWR exposed method this way:      
 
