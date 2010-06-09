@@ -12,39 +12,36 @@ Import this class:
           
 Say you have an exposed DWR Service class: <code>DwrInterface</code> and method: <code>doSomething</code> 
           
-Call a DWR exposed method this way:      
+You can call a DWR exposed method synchronously:      
 
-        [MSDwrProxy invokeWithMethod:DwrInterface.doSomething];
+        [[MSDwrProxy initialize] invokeWithMethod:DwrInterface.doSomething];
         
-or:
+or with a single parameter:
 
-        [MSDwrProxy invokeWithMethod:DwrInterface.doSomething parameter:aValue];
+        [[MSDwrProxy initialize] invokeWithMethod:DwrInterface.doSomething parameter:aValue];
         
-or:
+or with multiple parameters:
 
         var params = [CPArray array];
         [params addObject:value1];
         [params addObject:value2];
         [params addObject:value3];
         
-        [MSDwrProxy invokeWithMethod:setSomeValue parameters:params];
+        [[MSDwrProxy initialize] invokeWithMethod:setSomeValue parameters:params];
         
-If you expect a returned value from the server you have to implement a method that handles the returned value. The method will only expect one parameter which is the returned value, e.g.:
+If you're calling an exposed method asynchronously, you must define a method that acts like javascript callback that will do some action after the call is completed, e.g.:
 
-        - (void)responseReceived:(id)data
+        - (void)someAction:(id)data
         {
         }
         
 Then you can call the method like so:
 
         var dwrProxy = [MSDwrProxy initialize];
-        [dwrProxy invokeWithMethod:DwrInterface.doSomething target:self action:@selector(responseReceived:)];
+        [dwrProxy setTarget:self];
+        [dwrProxy setAction:@selector(someAction:)];
+        [dwrProxy invokeWithMethod:DwrInterface.doSomething];
         
-or:
-
-        var dwrProxy = [MSDwrProxy initialize];
-        [dwrProxy invokeWithMethod:DwrInterface.setSomeValue parameter:aValue target:self action:@selector(responseReceived:)];                        
-
 ## Example
     
 There are several files that you should look at to understand how the whole thing works:

@@ -8,7 +8,6 @@
  */
 
 @import <Foundation/CPObject.j>
-@import <Foundation/CPArray.j>
 @import "MSDwrProxy.j"
 
 var _textShadowColor = "#ccc";
@@ -107,8 +106,12 @@ var _textShadowOffset = CGSizeMake(0, 1);
 	var p = [MSDwrProxy initialize];
 
 	[p setTarget:self];
-	[p invokeWithMethod:DwrInterface.myObject action:@selector(myObjectResponse:)];
-	[p invokeWithMethod:DwrInterface.servletContext action:@selector(servletContextResponse:)];
+
+  [p setAction:@selector(myObjectResponse:)];
+	[p invokeWithMethod:DwrInterface.myObject];
+
+	[p setAction:@selector(servletContextResponse:)];
+	[p invokeWithMethod:DwrInterface.servletContext];
 }
 
 - (void)myObjectResponse:(id)data
@@ -135,13 +138,13 @@ var _textShadowOffset = CGSizeMake(0, 1);
 - (void)invalidateSession:(id)sender
 {
   // call DWR method synchronously
-	[MSDwrProxy invokeWithMethod:DwrInterface.invalidateSession];
+	[[MSDwrProxy initialize] invokeWithMethod:DwrInterface.invalidateSession];
 }
 
 - (void)setSessionAttributeValue:(id)sender
 {
   // call DWR method synchronously with parameter
-	[MSDwrProxy invokeWithMethod:DwrInterface.setSessionAttributeValue parameter:[sessionAttrValue stringValue]];
+	[[MSDwrProxy initialize] invokeWithMethod:DwrInterface.setSessionAttributeValue parameter:[sessionAttrValue stringValue]];
 }
 
 - (void)setSessionAttributeNameAndValue:(id)sender
@@ -151,8 +154,7 @@ var _textShadowOffset = CGSizeMake(0, 1);
   [params addObject:[sessionAttrName stringValue]];
   [params addObject:[sessionAttrValue2 stringValue]];
   
-	var p = [MSDwrProxy initialize];
-  [p invokeWithMethod:DwrInterface.setSessionAttributeNameAndValue parameters:params target:self action:@selector(responseReceived:)];
+  [[MSDwrProxy initialize] invokeWithMethod:DwrInterface.setSessionAttributeNameAndValue parameters:params target:self action:@selector(responseReceived:)];
 }
 
 - (void)responseReceived:(id)data

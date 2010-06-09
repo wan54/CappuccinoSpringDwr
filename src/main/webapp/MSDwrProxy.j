@@ -23,32 +23,24 @@
 - (id)init
 {
 	self = [super init];
+	_target = nil;
+	_selector = nil;
 	return self;
 }
 
-- (void)invokeWithMethod:(id)aMethod action:(SEL)aSelector
+- (void)invokeWithMethod:(id)aMethod
 {
-	if (self) [self invokeWithMethod:aMethod parameters:nil target:[self target] action:aSelector];
+	if (self) [self invokeWithMethod:aMethod parameters:nil target:[self target] action:[self action]];
 }
 
-- (void)invokeWithMethod:(id)aMethod target:(id)aTarget action:(SEL)aSelector
+- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam
 {
-	if (self) [self invokeWithMethod:aMethod parameters:nil target:aTarget action:aSelector];
+	if (self) [self invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] target:[self target] action:[self action]];
 }
 
-- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam action:(SEL)aSelector
+- (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params
 {
-	if (self) [self invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] target:[self target] action:aSelector];
-}
-
-- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam target:(id)aTarget action:(SEL)aSelector
-{
-	if (self) [self invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] target:aTarget action:aSelector];
-}
-
-- (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params action:(SEL)aSelector
-{
-	if (self) [self invokeWithMethod:aMethod parameters:params target:[self target] action:aSelector];
+	if (self) [self invokeWithMethod:aMethod parameters:params target:[self target] action:[self action]];
 }
 
 - (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params target:(id)aTarget action:(SEL)aSelector
@@ -78,21 +70,6 @@
 + (id)initialize
 {
 	return [[self alloc] init];
-}
-
-+ (void)invokeWithMethod:(id)aMethod
-{
-	[[[self alloc] init] invokeWithMethod:aMethod parameters:nil target:nil action:nil];
-}
-
-+ (void)invokeWithMethod:(id)aMethod parameter:(id)aParam
-{
-	[[[self alloc] init] invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] target:nil action:nil];
-}
-
-+ (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params
-{
-  [[[self alloc] init] invokeWithMethod:aMethod parameters:params target:nil action:nil];
 }
 
 - (void)setTarget:(id)aTarget
