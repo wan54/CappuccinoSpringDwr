@@ -46,20 +46,20 @@ Then you can call the method like so:
     
 There are several files that you should look at to understand how the whole thing works:
 
-- web.xml
-  - Entries added for DWR support.
+    - web.xml
+      - Entries added for DWR support.
   
-- applicationContext.xml
-  - Entries added for DWR support.
+    - applicationContext.xml
+      - Entries added for DWR support.
   
-- index.html
-  - Added DWR's Javascript dependencies.
+    - index.html
+      - Added DWR's Javascript dependencies.
   
-- AppController.j
-  - An example app.
+    - AppController.j
+      - An example app.
   
-- MSDwrProxy.j
-  - A proxy between Cappuccino app and DWR.
+    - MSDwrProxy.j
+      - A proxy between Cappuccino app and DWR.
 
 ## Note
 
