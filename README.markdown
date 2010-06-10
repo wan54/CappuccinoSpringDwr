@@ -1,8 +1,7 @@
 MSDwrProxy.j
 ==========
 
-This repository contains an example app that demonstrates the integration of [Cappuccino](http://www.cappuccino.org) app with [Springframework](http://www.springframework.org) and [DWR](http://directwebremoting.org). 
-This app also demonstrates how Javascript and Objective-J can co-exist.
+A [DWR](http://directwebremoting.org) proxy for [Cappuccino](http://www.cappuccino.org) app 
 
 ## Usage
 
@@ -44,6 +43,9 @@ Then you can call the method like so:
         
 ## Example
     
+This repository contains an example app that demonstrates the integration of [Cappuccino](http://www.cappuccino.org) app with [Springframework](http://www.springframework.org) and [DWR](http://directwebremoting.org). 
+This app also demonstrates how Javascript and Objective-J can co-exist.
+
 There are several files that you should look at to understand how the whole thing works:
 
     - web.xml
