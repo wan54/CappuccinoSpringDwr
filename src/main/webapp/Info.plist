@@ -8,5 +8,14 @@
 	<string>NewApplication</string>
 	<key>CPPrincipalClass</key>
 	<string>CPApplication</string>
+	<key>CPApplicationSize</key>
+	<dict>
+		<key>executable</key>
+		<integer>1897349</integer>
+		<key>data</key>
+		<integer>662793</integer>
+		<key>mhtml</key>
+		<integer>62309</integer>
+	</dict>
 </dict>
 </plist>

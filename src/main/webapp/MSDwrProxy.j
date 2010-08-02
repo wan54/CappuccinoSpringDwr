@@ -14,18 +14,71 @@
 
 @import <Foundation/CPObject.j>
 
+var _dwrJSON = {};
+
 @implementation MSDwrProxy : CPObject
 {
 	id _target;
 	SEL _selector;
+	MSDwrProxy _instance;
 }
 
-- (id)init
++ (void)initialize
 {
-	self = [super init];
+	if (self != MSDwrProxy) return;
+
 	_target = nil;
 	_selector = nil;
-	return self;
+
+  var warningHandler = function(errorMessage) {
+  
+    var a = [[CPAlert alloc] init];
+    [a setAlertStyle:CPCriticalAlertStyle];
+    [a setMessageText:@"Error occurred when invoking server method."];
+    if (errorMessage === "No data received from server") errorMessage = "There is no communication to server or server is down";
+    [a setInformativeText:errorMessage];
+    [a addButtonWithTitle:@"Close"];
+    [a runModal];
+    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+
+  };
+  
+  var errorHandler = function(errorMessage, exception) {
+  
+    var a = [[CPAlert alloc] init];
+    [a setAlertStyle:CPCriticalAlertStyle];
+    [a setMessageText:@"Error occurred when invoking server method."];
+    [a setInformativeText:errorMessage + '\n' + exception];
+    [a addButtonWithTitle:@"Close"];
+    [a runModal];
+    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+
+  };
+  
+  var exceptionHandler = function(errorMessage, exception) {
+  
+    var a = [[CPAlert alloc] init];
+    [a setAlertStyle:CPCriticalAlertStyle];
+    [a setMessageText:@"Exception occurred when invoking server method."];
+    [a setInformativeText:errorMessage + '\n' + exception];
+    [a addButtonWithTitle:@"Close"];
+    [a runModal];
+    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+    
+  };
+    
+  _dwrJSON.callback = nil;
+  _dwrJSON.warningHandler = warningHandler;
+  _dwrJSON.exceptionHandler = exceptionHandler;
+  _dwrJSON.errorHandler = errorHandler;
+  	
+	_instance = [self alloc];
+	[super init];
+}
+
++ (id)instance
+{
+	return _instance;
 }
 
 - (void)invokeWithMethod:(id)aMethod
@@ -38,38 +91,63 @@
 	if (self) [self invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] target:[self target] action:[self action]];
 }
 
+- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam target:(id)aTarget action:(SEL)aSelector
+{
+	if (self) [self invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] target:aTarget action:aSelector];
+}
+
 - (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params
 {
 	if (self) [self invokeWithMethod:aMethod parameters:params target:[self target] action:[self action]];
 }
 
+- (void)invokeWithMethod:(id)aMethod target:(id)aTarget action:(SEL)aSelector
+{
+	if (self) [self invokeWithMethod:aMethod parameters:nil target:aTarget action:aSelector];
+}
+
 - (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params target:(id)aTarget action:(SEL)aSelector
 {
-  if (aTarget != nil && aSelector != nil) {
-    var callback = function(data) {
-      [aTarget performSelector:aSelector withObject:data];
+  if (self) {
+    var signature = [self methodSignatureForSelector:aSelector];
+    var myInvocation = [CPInvocation invocationWithMethodSignature:signature];
 
-      [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
-    };
-
-    if (params && [params count] > 0) {
-      [params addObject:callback];
-      aMethod.apply(this, params);
-    } else {
-      aMethod(callback);
-    }
-  } else {
-    if (params && [params count] > 0) {
-      aMethod.apply(this, params);
-    } else {
-      aMethod();
-    }
+    [myInvocation setSelector:aSelector];
+    
+    [self invokeWithMethod:aMethod parameters:params target:aTarget invocation:myInvocation];
   }
 }
 
-+ (id)initialize
+- (void)invokeWithMethod:(id)aMethod parameter:(id)aParam target:(id)aTarget invocation:(CPInvocation)anInvocation
 {
-	return [[self alloc] init];
+	if (self) [self invokeWithMethod:aMethod parameters:[CPArray arrayWithObject:aParam] target:aTarget invocation:anInvocation];
+}
+
+- (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params target:(id)aTarget invocation:(CPInvocation)anInvocation
+{
+
+  if (params == nil) {
+    params = [CPArray array];
+  }
+
+  if (aTarget != nil && anInvocation != nil) {
+  
+    var callback = function(data) {
+    
+      [anInvocation setArgument:data atIndex:2];
+      [anInvocation invokeWithTarget:aTarget];
+
+      [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+      
+    };
+
+    _dwrJSON.callback = callback;
+  }
+  
+  [params addObject:_dwrJSON];
+  
+  aMethod.apply(this, params);
+
 }
 
 - (void)setTarget:(id)aTarget
