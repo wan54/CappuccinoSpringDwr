@@ -30,39 +30,48 @@ var _dwrJSON = {};
 	_target = nil;
 	_selector = nil;
 
+	_instance = [self alloc];
+	[super init];
+
   var warningHandler = function(errorMessage) {
   
-    var a = [[CPAlert alloc] init];
-    [a setAlertStyle:CPCriticalAlertStyle];
-    [a setMessageText:@"Error occurred when invoking server method."];
-    if (errorMessage === "No data received from server") errorMessage = "There is no communication to server or server is down";
-    [a setInformativeText:errorMessage];
-    [a addButtonWithTitle:@"Close"];
-    [a runModal];
+    var wa = [[CPAlert alloc] init];
+		[wa setDelegate:_instance];
+    [wa setAlertStyle:CPCriticalAlertStyle];
+    [wa setMessageText:@"Warning occurred when invoking server method."];
+    if (errorMessage === "No data received from server") {
+			errorMessage = "There is no communication to server or server is down";
+			[wa setMessageText:@"Error occurred when invoking server method."];
+		}
+    [wa setInformativeText:errorMessage];
+    [wa addButtonWithTitle:@"Close"];
+    [wa runModal];
     [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
 
-  };
+	};
   
   var errorHandler = function(errorMessage, exception) {
   
-    var a = [[CPAlert alloc] init];
-    [a setAlertStyle:CPCriticalAlertStyle];
-    [a setMessageText:@"Error occurred when invoking server method."];
-    [a setInformativeText:errorMessage + '\n' + exception];
-    [a addButtonWithTitle:@"Close"];
-    [a runModal];
+    var ea = [[CPAlert alloc] init];
+		[ea setDelegate:_instance];
+    [ea setAlertStyle:CPCriticalAlertStyle];
+    [ea setMessageText:@"Error occurred when invoking server method."];
+    [ea setInformativeText:errorMessage + '\n' + exception];
+    [ea addButtonWithTitle:@"Close"];
+    [ea runModal];
     [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
 
   };
   
   var exceptionHandler = function(errorMessage, exception) {
   
-    var a = [[CPAlert alloc] init];
-    [a setAlertStyle:CPCriticalAlertStyle];
-    [a setMessageText:@"Exception occurred when invoking server method."];
-    [a setInformativeText:errorMessage + '\n' + exception];
-    [a addButtonWithTitle:@"Close"];
-    [a runModal];
+    var exa = [[CPAlert alloc] init];
+		[exa setDelegate:_instance];
+    [exa setAlertStyle:CPCriticalAlertStyle];
+    [exa setMessageText:@"Exception occurred when invoking server method."];
+    [exa setInformativeText:errorMessage + '\n' + exception];
+    [exa addButtonWithTitle:@"Close"];
+    [exa runModal];
     [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
     
   };
@@ -70,10 +79,7 @@ var _dwrJSON = {};
   _dwrJSON.callback = nil;
   _dwrJSON.warningHandler = warningHandler;
   _dwrJSON.exceptionHandler = exceptionHandler;
-  _dwrJSON.errorHandler = errorHandler;
-  	
-	_instance = [self alloc];
-	[super init];
+  _dwrJSON.errorHandler = errorHandler;  	
 }
 
 + (id)instance
@@ -125,12 +131,12 @@ var _dwrJSON = {};
 
 - (void)invokeWithMethod:(id)aMethod parameters:(CPArray)params target:(id)aTarget invocation:(CPInvocation)anInvocation
 {
-
-  if (params == nil) {
+  if (params === nil) {
     params = [CPArray array];
   }
-
+  
   if (aTarget != nil && anInvocation != nil) {
+		_target = aTarget;
   
     var callback = function(data) {
     
@@ -142,12 +148,35 @@ var _dwrJSON = {};
     };
 
     _dwrJSON.callback = callback;
-  }
-  
+	}
+
   [params addObject:_dwrJSON];
   
   aMethod.apply(this, params);
 
+}
+
+- (id)invokeWithSynchronousMethod:(id)aMethod parameters:(CPArray)params
+{
+
+	if (params == nil) {
+		params = [CPArray array];
+	}
+
+	var returnData;
+
+	var callback = function(data) {
+		returnData = data;
+	};
+
+	_dwrJSON.async = false;
+	_dwrJSON.callback = callback;
+
+	[params addObject:_dwrJSON];
+
+	aMethod.apply(this, params);
+
+	return returnData;
 }
 
 - (void)setTarget:(id)aTarget
@@ -168,6 +197,17 @@ var _dwrJSON = {};
 - (SEL)action
 {
 	return _selector;
+}
+
+- (void)alertDidEnd:(CPAlert)anAlert returnCode:(int)code
+{
+	/* This is where the user handle their specific stuff/cleanup 
+   * when the call to the server method return an error/exception
+   */
+	var messageText = [anAlert messageText];
+	if ([messageText hasPrefix:@"Error"] == YES || [messageText hasPrefix:@"Exception"] == YES)
+		if (_target && [_target respondsToSelector:@selector(dwrCallDidReturnError)])
+			[_target dwrCallDidReturnError];
 }
 
 @end
