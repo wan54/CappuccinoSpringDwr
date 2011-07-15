@@ -13,11 +13,11 @@ Say you have an exposed DWR Service class: <code>DwrInterface</code> and method:
           
 You can call a DWR exposed method synchronously:      
 
-        [[MSDwrProxy initialize] invokeWithMethod:DwrInterface.doSomething];
+        [[MSDwrProxy instance] invokeWithMethod:DwrInterface.doSomething];
         
 or with a single parameter:
 
-        [[MSDwrProxy initialize] invokeWithMethod:DwrInterface.doSomething parameter:aValue];
+        [[MSDwrProxy instance] invokeWithMethod:DwrInterface.doSomething parameter:aValue];
         
 or with multiple parameters:
 
@@ -36,7 +36,7 @@ If you're calling an exposed method asynchronously, you must define a method tha
         
 Then you can call the method like so:
 
-        var dwrProxy = [MSDwrProxy initialize];
+        var dwrProxy = [MSDwrProxy instance];
         [dwrProxy setTarget:self];
         [dwrProxy setAction:@selector(someAction:)];
         [dwrProxy invokeWithMethod:DwrInterface.doSomething];
