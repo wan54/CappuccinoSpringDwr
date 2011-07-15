@@ -41,6 +41,19 @@ Then you can call the method like so:
         [dwrProxy setAction:@selector(someAction:)];
         [dwrProxy invokeWithMethod:DwrInterface.doSomething];
         
+DirectWebRemoting has one nice feature that is able to recognize your Cappuccino Object and accurately map it to your predefined Java Bean Class. As you may have guessed, yes, you're right, it is done by JSON. To utilize the feature, all you have to do is to create a handy Cappuccino class method that converts Cappuccino object into JSON e.g.:
+
+        + (id)JSONFromObject:(Person)p
+        {
+          var json = {};
+          json.personID = [p personID];
+          json.firstName = [p firstName];
+          json.lastName = [p lastName];
+          json.email = [p email];
+        
+          return json;
+        }
+
 ## Example
     
 This repository contains an example app that demonstrates the integration of [Cappuccino](http://www.cappuccino.org) app with [Springframework](http://www.springframework.org) and [DWR](http://directwebremoting.org). 
