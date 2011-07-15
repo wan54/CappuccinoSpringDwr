@@ -20,71 +20,127 @@ var _dwrJSON = {};
 {
 	id _target;
 	SEL _selector;
-	MSDwrProxy _instance;
 }
 
-+ (void)initialize
+//+ (void)initialize
+//{
+//	if (self != MSDwrProxy) return;
+//
+//	_target = nil;
+//	_selector = nil;
+//
+//	_instance = [self alloc];
+//	[super init];
+//
+//  var warningHandler = function(errorMessage) {
+//  
+//    var wa = [[CPAlert alloc] init];
+//		[wa setDelegate:_instance];
+//    [wa setAlertStyle:CPCriticalAlertStyle];
+//    [wa setMessageText:@"Warning occurred when invoking server method."];
+//    if (errorMessage === "No data received from server") {
+//			errorMessage = "There is no communication to server or server is down";
+//			[wa setMessageText:@"Error occurred when invoking server method."];
+//		}
+//    [wa setInformativeText:errorMessage];
+//    [wa addButtonWithTitle:@"Close"];
+//    [wa runModal];
+//    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+//
+//	};
+//  
+//  var errorHandler = function(errorMessage, exception) {
+//  
+//    var ea = [[CPAlert alloc] init];
+//		[ea setDelegate:_instance];
+//    [ea setAlertStyle:CPCriticalAlertStyle];
+//    [ea setMessageText:@"Error occurred when invoking server method."];
+//    [ea setInformativeText:errorMessage + '\n' + exception];
+//    [ea addButtonWithTitle:@"Close"];
+//    [ea runModal];
+//    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+//
+//  };
+//  
+//  var exceptionHandler = function(errorMessage, exception) {
+//  
+//    var exa = [[CPAlert alloc] init];
+//		[exa setDelegate:self];
+//    [exa setAlertStyle:CPCriticalAlertStyle];
+//    [exa setMessageText:@"Exception occurred when invoking server method."];
+//    [exa setInformativeText:errorMessage + '\n' + exception];
+//    [exa addButtonWithTitle:@"Close"];
+//    [exa runModal];
+//    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+//    
+//  };
+//    
+//  _dwrJSON.callback = nil;
+//  _dwrJSON.warningHandler = warningHandler;
+//  _dwrJSON.exceptionHandler = exceptionHandler;
+//  _dwrJSON.errorHandler = errorHandler;  	
+//}
+
+- (id)init
 {
-	if (self != MSDwrProxy) return;
-
-	_target = nil;
-	_selector = nil;
-
-	_instance = [self alloc];
-	[super init];
-
-  var warningHandler = function(errorMessage) {
-  
-    var wa = [[CPAlert alloc] init];
-		[wa setDelegate:_instance];
-    [wa setAlertStyle:CPCriticalAlertStyle];
-    [wa setMessageText:@"Warning occurred when invoking server method."];
-    if (errorMessage === "No data received from server") {
-			errorMessage = "There is no communication to server or server is down";
-			[wa setMessageText:@"Error occurred when invoking server method."];
-		}
-    [wa setInformativeText:errorMessage];
-    [wa addButtonWithTitle:@"Close"];
-    [wa runModal];
-    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
-
-	};
-  
-  var errorHandler = function(errorMessage, exception) {
-  
-    var ea = [[CPAlert alloc] init];
-		[ea setDelegate:_instance];
-    [ea setAlertStyle:CPCriticalAlertStyle];
-    [ea setMessageText:@"Error occurred when invoking server method."];
-    [ea setInformativeText:errorMessage + '\n' + exception];
-    [ea addButtonWithTitle:@"Close"];
-    [ea runModal];
-    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
-
-  };
-  
-  var exceptionHandler = function(errorMessage, exception) {
-  
-    var exa = [[CPAlert alloc] init];
-		[exa setDelegate:_instance];
-    [exa setAlertStyle:CPCriticalAlertStyle];
-    [exa setMessageText:@"Exception occurred when invoking server method."];
-    [exa setInformativeText:errorMessage + '\n' + exception];
-    [exa addButtonWithTitle:@"Close"];
-    [exa runModal];
-    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
-    
-  };
-    
-  _dwrJSON.callback = nil;
-  _dwrJSON.warningHandler = warningHandler;
-  _dwrJSON.exceptionHandler = exceptionHandler;
-  _dwrJSON.errorHandler = errorHandler;  	
+  if (self = [super init])
+	{
+	  _target = nil;
+	  _selector = nil;
+	  _dwrJSON.callback = nil;
+		
+	  _dwrJSON.warningHandler = 
+			function(errorMessage) {
+	    
+	      var wa = [[CPAlert alloc] init];
+	      [wa setDelegate:self];
+	      [wa setAlertStyle:CPCriticalAlertStyle];
+	      [wa setMessageText:@"Warning occurred when invoking server method."];
+	      if (errorMessage === "No data received from server") {
+	        errorMessage = "There is no communication to server or server is down";
+	        [wa setMessageText:@"Error occurred when invoking server method."];
+	      }
+	      [wa setInformativeText:errorMessage];
+	      [wa addButtonWithTitle:@"Close"];
+	      [wa runModal];
+	      [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+	  
+	    };
+			
+	  _dwrJSON.exceptionHandler = 
+			function(errorMessage, exception) {
+	    
+	      var exa = [[CPAlert alloc] init];
+	      [exa setDelegate:self];
+	      [exa setAlertStyle:CPCriticalAlertStyle];
+	      [exa setMessageText:@"Exception occurred when invoking server method."];
+	      [exa setInformativeText:errorMessage + '\n' + exception];
+	      [exa addButtonWithTitle:@"Close"];
+	      [exa runModal];
+	      [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+	      
+	    };
+		
+	  _dwrJSON.errorHandler = 
+			function(errorMessage, exception) {
+	    
+	      var ea = [[CPAlert alloc] init];
+	      [ea setDelegate:self];
+	      [ea setAlertStyle:CPCriticalAlertStyle];
+	      [ea setMessageText:@"Error occurred when invoking server method."];
+	      [ea setInformativeText:errorMessage + '\n' + exception];
+	      [ea addButtonWithTitle:@"Close"];
+	      [ea runModal];
+	      [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+	  
+	    };   
+	}	
+	return self;
 }
 
 + (id)instance
 {
-	return _instance;
+	return [[MSDwrProxy alloc] init];
 }
 
 - (void)invokeWithMethod:(id)aMethod
@@ -156,6 +212,11 @@ var _dwrJSON = {};
 
 }
 
+- (id)invokeWithSynchronousMethod:(id)aMethod
+{
+	return [self invokeWithSynchronousMethod:aMethod parameters:nil];
+}
+
 - (id)invokeWithSynchronousMethod:(id)aMethod parameters:(CPArray)params
 {
 
@@ -167,6 +228,7 @@ var _dwrJSON = {};
 
 	var callback = function(data) {
 		returnData = data;
+    [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
 	};
 
 	_dwrJSON.async = false;
@@ -199,11 +261,12 @@ var _dwrJSON = {};
 	return _selector;
 }
 
+/* 
+ * Feedback to the user screen when the call to the server method return an error/exception.
+ * The user must implement 'dwrCallDidReturnError' to receive the server feedback
+ */
 - (void)alertDidEnd:(CPAlert)anAlert returnCode:(int)code
 {
-	/* This is where the user handle their specific stuff/cleanup 
-   * when the call to the server method return an error/exception
-   */
 	var messageText = [anAlert messageText];
 	if ([messageText hasPrefix:@"Error"] == YES || [messageText hasPrefix:@"Exception"] == YES)
 		if (_target && [_target respondsToSelector:@selector(dwrCallDidReturnError)])
