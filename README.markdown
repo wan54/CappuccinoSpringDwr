@@ -1,7 +1,7 @@
 MSDwrProxy.j
 ==========
 
-A [DWR](http://directwebremoting.org) proxy for [Cappuccino](http://www.cappuccino.org) app 
+A [DWR](http://directwebremoting.org) proxy for J2EE-[Cappuccino](http://www.cappuccino.org) app 
 
 ## Usage
 
