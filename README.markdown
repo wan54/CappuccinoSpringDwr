@@ -11,7 +11,7 @@ Import this class:
           
 Say you have an exposed DWR Service class: <code>DwrInterface</code> and method: <code>doSomething</code> 
           
-You can call a DWR exposed method synchronously:      
+You can call a remote exposed method synchronously:      
 
         [[MSDwrProxy instance] invokeWithMethod:DwrInterface.doSomething];
         
@@ -28,13 +28,13 @@ or with multiple parameters:
         
         [[MSDwrProxy initialize] invokeWithMethod:setSomeValue parameters:params];
         
-If you're calling an exposed method asynchronously, you must define a method that acts like javascript callback that will do some action after the call is completed, e.g.:
+If you're calling an exposed remote method asynchronously, you must define a local method that acts like javascript callback that will do some action after the remote call is completed, e.g.:
 
         - (void)someAction:(id)data
         {
         }
         
-Then you can call the method like so:
+Then invocation of the local method is like so:
 
         var dwrProxy = [MSDwrProxy instance];
         [dwrProxy setTarget:self];
